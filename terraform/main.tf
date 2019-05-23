@@ -54,8 +54,11 @@ resource "aws_instance" "k8s_master" {
       "sudo /tmp/install_master.sh",
     ]
   }
-
- connection {
+  provisioner "local-exec" {
+    command = "ssh -o \"StrictHostKeyChecking no\" centos@${aws_instance.k8s_master.public_ip} 'kubeadm token create --print-join-command' >> ../scripts/join.sh"
+  }
+ 
+  connection {
     user = "centos"
     private_key = "${file("~/.ssh/id_rsa")}"
   }
@@ -80,10 +83,17 @@ resource "aws_instance" "node1" {
      destination = "/tmp/install_node.sh"
   }
 
+  provisioner "file" {
+    source      ="../scripts/join.sh"
+    destination ="/tmp/join.sh"
+  }
+
   provisioner "remote-exec" { 
     inline = [
       "chmod +x /tmp/install_node.sh",
-      "sudo /tmp/install_node.sh ${aws_instance.k8s_master.private_ip}",
+      "chmod +x /tmp/join.sh",
+      "sudo /tmp/install_node.sh",
+      "sudo /tmp/join.sh"
     ]
  }
 
