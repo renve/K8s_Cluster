@@ -4,6 +4,13 @@ provider "aws" {
   profile                 = "awsaml-362116776350-BAHSSO_Admin_Role"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terra-back"
+    key    = "/backup-1"
+    region = "us-east-1"
+  }
+}
 
 resource "aws_security_group" "ivarela_sg" {
   name         = "ivarela_sg"
