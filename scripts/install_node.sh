@@ -42,4 +42,6 @@ yum install -y kubelet kubeadm kubectl
 #Enable Kubernetes. The kubelet service will not start until you run kubeadm init.
 systemctl enable kubelet
 
-
+IP=$1
+JOIN=$(ssh centos@$IP 'kubeadm token create --print-join-command')
+ssh centos@$IP sudo $JOIN

@@ -49,10 +49,12 @@ kubeadm init --pod-network-cidr=10.244.0.0/16
 
 #Exit sudo and run the following:
 
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
+mkdir -p $USER_HOME/.kube
+cp -i /etc/kubernetes/admin.conf $USER_HOME/.kube/config
+chown -R $SUDO_UID:$SUDO_UID $USER_HOME/.kube
 
 #Deploy Flannel.
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+cd $USER_HOME
+sudo -u $SUDO_USER kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 

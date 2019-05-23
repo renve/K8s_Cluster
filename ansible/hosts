@@ -1,5 +1,5 @@
 [masters]
-master ansible_host=54.81.100.220 ansible_user=centos
+master ansible_host= ansible_user=centos
 
 [workers]
-worker1 ansible_host=35.172.140.224 ansible_user=centos
+worker1 ansible_host= ansible_user=centos
